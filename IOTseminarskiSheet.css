@@ -1,0 +1,44 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.container{
+    margin: 40px;
+}
+#naslov{
+    text-align: center;
+    color: green;
+   border-bottom: 2px green solid;
+   margin-bottom: 20px;
+}
+#main{
+    margin:0 248px; 
+    height: 540px;
+    border: 3px solid green;
+}
+#onoff{
+    width: 75px;
+    height: 45px;
+    margin-top: 10px;
+    background-color: green;
+    border-radius: 14px;
+    font-size: 17px;
+    color: white;
+}
+
+#info{
+    text-align: center;
+    margin: 0 180px;
+    background-color:blue;
+    padding: 10px;
+    font-weight: 800;
+    color: yellow;
+    font-size: 17px;
+    
+}
+
+.command{
+    padding: 3px;
+    margin-right: 10px;
+    
+}
