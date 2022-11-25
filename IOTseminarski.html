@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="IOTseminarskiSheet.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1 id="naslov">LED CONTROL</h1>
+   
+    <div id="main">
+      <!--centralni div-->
+     <div style="height: 80px;text-align: center;">
+      <button id="onoff">ON</button>
+    </div>
+    <div id="info" >Svjetlo je upaljeno</div>
+    <div style="text-align:center;margin: 10px 180px 0 180px;background-color: olive;
+    padding-top: 10px;color: white;">
+     <!--div za naslov jacine svijetla-->
+      <label for="" >Unesite jačinu osvjetljenja (0-255)</label>
+    </div>
+    <div class="show" style="text-align: center;padding-top: 14px;padding-bottom:10px;background-color: olive;
+    margin: 0 180px;">
+    <!--div za unos jacine svijetla-->
+      <input id="range" type="range" style="padding: 5px;" id="anVrijednost" min="0" max="255">
+    </div>
+    <div class="show" style="text-align:center;margin: 10px 180px 0 180px;background-color: olive;
+    padding-top: 10px;color: white;">
+    <!--div za naslov voltaze-->
+      <label for="" >Vrijednost napona</label>
+    </div>
+    <div style="text-align: center;padding-top: 14px;padding-bottom:10px;background-color: olive;
+    margin: 0 180px;">
+    <!--div za prikaz jacine svijetla-->
+      <input type="text" style="padding: 5px; text-align: center;" id="napon" style="font-weight: 800" disabled>
+    </div>
+    <div style="border:3px olive solid ; margin: 10px 180px;">
+    <div id="sijalica" style="margin: 10px auto;width: 120px; background-color:
+     yellow;height: 120px;border-radius: 50%;">
+    </div>
+    </div>
+    <div style=" margin: 20px 140px;text-align: center;height: 30px;">
+      <!--div za buttone-->
+      <button class="command" id="realtime">Firebase</button>
+      <button class="command" id="startRandom">Pokreni random</button>
+      <button class="command" id="stopRandom">Zaustavi random</button>
+            <!--div za buttone-->
+    </div>
+    <!--centralni div-->
+  </div>
+ 
+    
+    
+    
+  </div>
+
+  
+</body>
+<script src="scriptIOT.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-database.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyA2MMbA8x00azTwIdJEhGK2YRkGiFoQ8Ao",
+    authDomain: "firstproa-e9eb2.firebaseapp.com",
+    databaseURL: "https://firstproa-e9eb2-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "firstproa-e9eb2",
+    storageBucket: "firstproa-e9eb2.appspot.com",
+    messagingSenderId: "947334324236",
+    appId: "1:947334324236:web:e1597227b011e1eb0e0e29",
+    measurementId: "G-4BL91CS7WZ"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
+  var item = document.getElementById("big-one");
+  var main= document.getElementById("main");
+  var onoff=document.getElementById("onoff");
+  let mainW= main.clientWidth;
+  let info= document.getElementById("info");
+  var turn=false;
+  var napon=document.getElementById("napon");
+  var opacity=document.getElementById("sijalica");
+  var range= document.getElementById("range");
+  var realtime=document.getElementById("realtime");
+  var startRandom=document.getElementById("startRandom");
+  var stopRandom=document.getElementById("stopRandom");
+  var t;
+  let brojac=0;
+
+
+  napon.value=((range.value/51).toFixed(2)).toString() + " V";
+  
+  if (range.value==0) {
+    onoff.style.background="red";
+    onoff.innerHTML="OFF";
+    info.style.background="black";
+    info.style.color="white";
+    info.innerHTML="Svjetlo je ugašeno";
+  }
+  else{
+    onoff.style.background="green";
+    onoff.innerHTML="ON";
+    info.style.background="blue";
+    info.style.color="yelloe";
+    info.innerHTML="Svjetlo je upaljeno";
+  }
+  
+  range.onchange= ()=>{
+    if(t!=null){
+      clearInterval(t);
+      brojac=0;
+    }
+    napon.value =(range.value/51).toFixed(2) + " V"; 
+    opacity.style.opacity=range.value/(255);
+    if (range.value==0) {
+    onoff.style.background="red";
+    onoff.innerHTML="OFF";
+    info.style.background="black";
+    info.style.color="white";
+    info.innerHTML="Svjetlo je ugašeno";
+  }
+  else{
+    onoff.style.background="green";
+    onoff.innerHTML="ON";
+    info.style.background="blue";
+    info.style.color="yelloe";
+    info.innerHTML="Svjetlo je upaljeno";
+  }
+   
+  }
+  
+ realtime.onclick=()=>{
+
+  df = firebase.database().ref().child("Analog");
+  df.on('value', snap => {
+    if(t!=null){
+      clearInterval(t);
+      brojac=0;
+    }
+    range.value = snap.val();
+    napon.value =(range.value/51).toFixed(2) + " V";
+    opacity.style.opacity=range.value/(255);
+    if (range.value==0) {
+    onoff.style.background="green";
+    onoff.innerHTML="ON";
+    info.style.background="black";
+    info.style.color="white";
+    info.innerHTML="Svjetlo je ugašeno";
+  }
+  else{
+    onoff.style.background="green";
+    onoff.innerHTML="ON";
+    info.style.background="blue";
+    info.style.color="yelloe";
+    info.innerHTML="Svjetlo je upaljeno";
+  }
+  });
+ 
+ }
+  
+ startRandom.onclick=()=>{
+  if(brojac==0){
+  brojac++;
+  t=setInterval(()=>{
+    let num=Math.floor(Math.random()*255);
+  range.value=num;
+  napon.value=(num/51).toFixed(2) + " V"; 
+  opacity.style.opacity=range.value/(255);
+  if (range.value==0) {
+    onoff.style.background="green";
+    onoff.innerHTML="ON";
+    info.style.background="black";
+    info.style.color="white";
+    info.innerHTML="Svjetlo je ugašeno";
+  }
+  else{
+    onoff.style.background="green";
+    onoff.innerHTML="ON";
+    info.style.background="blue";
+    info.style.color="yelloe";
+    info.innerHTML="Svjetlo je upaljeno";
+  }
+  },1000);
+}
+ }
+
+ stopRandom.onclick=()=>{
+  clearInterval(t);
+  brojac=0;
+ }
+
+</script>
+</html>
